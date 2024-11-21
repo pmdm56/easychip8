@@ -25,7 +25,7 @@ IF NOT EXIST "%OBJ_DIR%" (
 IF NOT EXIST "%OUT_DIR%" (
     mkdir "%OUT_DIR%"
     IF EXIST "%SDL_DLL%" (
-        move "%SDL_DLL%" "%OUT_DIR%"
+        copy "%SDL_DLL%" "%OUT_DIR%"
     )
 )
 
