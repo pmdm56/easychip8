@@ -1,0 +1,80 @@
+#ifndef EASYCHIP8_H
+#define EASYCHIP8_H
+
+#include <string>
+#include <cstdint>
+#include <cstring>
+#include "Screen.h"
+
+#define REG_SIZE 16
+#define STACK_SIZE 16
+#define MEM_SIZE 4096
+#define ROM_START_ADDR 0x200 //load rom initial addr
+
+#define VIDEO_LENGTH 64
+#define VIDEO_WIDTH 32
+#define KEYPAD_SIZE 16
+
+#define FONTSET_SIZE 90
+#define FONTSET_START_ADDRESS 0x50
+
+class EasyChip8 {
+public:
+    EasyChip8();
+    void loadROM(const std::string &filename);
+	void run();
+private:
+    uint8_t memory[MEM_SIZE];
+    uint8_t registers[REG_SIZE];
+	uint16_t index;
+	uint16_t pc;
+	uint16_t stack[STACK_SIZE];
+	uint8_t sp;
+	uint8_t delayTimer;
+	uint8_t soundTimer;
+	uint8_t keypad[KEYPAD_SIZE];
+	uint32_t video[VIDEO_LENGTH * VIDEO_WIDTH];
+	uint16_t opcode;
+	uint8_t debugg;
+
+	uint8_t fontset[FONTSET_SIZE] =
+	{
+		0xF0, 0x90, 0x90, 0x90, 0xF0, // 0 50
+		0x20, 0x60, 0x20, 0x20, 0x70, // 1 55
+		0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2 5A
+		0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3 5F
+		0x90, 0x90, 0xF0, 0x10, 0x10, // 4 64
+		0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5 69
+		0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6 6E
+		0xF0, 0x10, 0x20, 0x40, 0x40, // 7 73
+		0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8 78
+		0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9 7D
+		0xF0, 0x90, 0xF0, 0x90, 0x90, // A  82
+		0xE0, 0x90, 0xE0, 0x90, 0xE0, // B  87 
+		0xF0, 0x80, 0x80, 0x80, 0xF0, // C  8C
+		0xE0, 0x90, 0x90, 0x90, 0xE0, // D 91
+		0xF0, 0x80, 0xF0, 0x80, 0xF0, // E 96
+		0xF0, 0x80, 0xF0, 0x80, 0x80,  // F 9B
+		0xF0, 0x10, 0x10, 0x90, 0x60,  // J A0
+		0xF0, 0x60, 0x60, 0x60, 0xF0   // I A5
+	};
+
+	//operations
+	void OP_00E0();
+	void OP_1nnn();
+	void OP_6xnn();
+	void OP_7xnn();
+	void OP_Annn();
+	void OP_Dxyn();
+
+	//loop
+	void cycle();
+
+	//other
+	void debugVideo();
+	void initializeMemory();
+	void printMemory();
+
+};
+
+#endif // EASYCHIP8_H
